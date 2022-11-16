@@ -1,6 +1,7 @@
 <?php
 class user {
 
+    private $db;
     private int $id;
     private string $login;
     private string $passwordHash;
@@ -14,16 +15,29 @@ class user {
         global $db;
         $this->db = $db;
     }
-    public function isAuth() ; bool {
+    public function isAuth() : bool {
+        if(isset($this->id) && $this->id != null)
+            return true;
+        else
+            return false;
     }
     public function login() {
-        global $db;
-    }
+      $query = "SELECT * FROM user WHERE login = ? LIMIT 1";
+      $preparedQuery = $this->db->prepare($query);
+      $preparedQuery->bind_param('s', $this->login);
+      $preparedQuery->execute();
+      $result = $preparedQuery->get_result();
+      $row = $result->fetch_assoc();
+      if(password_verify($this->password, $row['password'])) {
+          $this->id = $row['id'];
+          $this->firstName = $row['firstName'];
+          $this->lastName = $row['lastName'];
+        }  
     public function logout() { 
-        global $db;       
+           
     }
     public function register() {
-        global $db;
+        
     }
 
 }

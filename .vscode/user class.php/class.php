@@ -22,17 +22,21 @@ class user {
             return false;
     }
     public function login() {
-      $query = "SELECT * FROM user WHERE login = ? LIMIT 1";
-      $preparedQuery = $this->db->prepare($query);
-      $preparedQuery->bind_param('s', $this->login);
-      $preparedQuery->execute();
-      $result = $preparedQuery->get_result();
-      $row = $result->fetch_assoc();
-      if(password_verify($this->password, $row['password'])) {
-          $this->id = $row['id'];
-          $this->firstName = $row['firstName'];
-          $this->lastName = $row['lastName'];
-        }  
+        $query = "SELECT * FROM user WHERE login = ? LIMIT 1";
+        $preparedQuery = $this->db->prepare($query);
+        $preparedQuery->bind_param('s', $this->login);
+        $preparedQuery->execute();
+        $result = $preparedQuery->get_result();
+        if($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            if(password_verify($this->password, $row['password'])) {
+                $this->id = $row['id'];
+                $this->firstName = $row['firstName'];
+                $this->lastName = $row['lastName'];
+            }
+        }
+            
+    }
     public function logout() { 
            
     }
